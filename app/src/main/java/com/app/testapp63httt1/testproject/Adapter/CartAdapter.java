@@ -105,7 +105,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 public void onChanged(Product product) {
                     if(product!=null){
                         productName.setText(product.getName());
-                        productPrice.setText(String.valueOf(product.getPrice()));
+                        productPrice.setText(String.valueOf(product.getPrice())+"$");
                         productCount.setText(String.valueOf(cart.getCount()));
                         productTotal.setText(cart.getTotal()+"$");
                         Log.d("product","Not null");

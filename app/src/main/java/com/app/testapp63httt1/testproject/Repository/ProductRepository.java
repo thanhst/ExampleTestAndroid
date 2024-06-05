@@ -8,7 +8,9 @@ import com.app.testapp63httt1.testproject.R;
 import android.app.Application;
 import android.net.Uri;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.room.RoomDatabase;
 
 import java.util.List;
@@ -19,10 +21,11 @@ public class ProductRepository {
     private DatabaseRoom databaseRoom;
     private ProductDAO productDAO;
     private ExecutorService dataserExecutorService;
-    private Application application;
+    private Application app;
 
     public ProductRepository(Application application){
-        databaseRoom = DatabaseRoom.getInstance(application);
+        app = application;
+        databaseRoom = DatabaseRoom.getInstance(app);
         productDAO = databaseRoom.productDAO();
         dataserExecutorService = Executors.newSingleThreadExecutor();
     }
@@ -59,4 +62,6 @@ public class ProductRepository {
     public LiveData<Product> getProductById(int id){
         return productDAO.getProductById(id);
     }
+
+
 }

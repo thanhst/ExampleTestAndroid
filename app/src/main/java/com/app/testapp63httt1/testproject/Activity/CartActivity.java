@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,7 +43,12 @@ public class CartActivity extends AppCompatActivity {
     private ImageView back;
     private RecyclerView recyclerView;
     private CartRepository cartRepository;
-    @SuppressLint("MissingInflatedId")
+    private TextView totalReal;
+    private Button clearCart;
+    private Button calculateCart;
+    private EditText sale;
+    private TextView percenSale;
+    private TextView total;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +63,13 @@ public class CartActivity extends AppCompatActivity {
         recyclerView=findViewById(R.id.recycleviewCart);
         settings = findViewById(R.id.settings);
         back=findViewById(R.id.back);
+        totalReal = findViewById(R.id.totalReal);
+        clearCart = findViewById(R.id.deleteCart);
+        calculateCart = findViewById(R.id.calcuteTotal);
+        total = findViewById(R.id.totalReal);
+        sale= findViewById(R.id.sale);
+        percenSale = findViewById(R.id.percenSale);
+
 
         Bundle bundle = getIntent().getExtras();
         user = (User) bundle.getSerializable("user");
@@ -83,6 +96,29 @@ public class CartActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        cartRepository.getTotal(user.getUsername(),CartActivity.this).observe(CartActivity.this, new Observer<Float>() {
+            @Override
+            public void onChanged(Float aFloat) {
+                totalReal.setText(String.valueOf(aFloat)+"$");
+            }
+        });
+
+        clearCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartRepository.deleteAllCartOfUser(user.getUsername());
+            }
+        });
+
+        calculateCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+
+
     }
     public void DialogSettings(Context context){
         try {
@@ -115,6 +151,7 @@ public class CartActivity extends AppCompatActivity {
                     finish();
                 }
             });
+
 
             dialog.show();
         } catch (Exception e) {

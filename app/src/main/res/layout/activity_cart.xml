@@ -143,10 +143,12 @@
             app:layout_constraintVertical_bias="0.08"></TextView>
 
         <EditText
+            android:id="@+id/sale"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_rectangle"
             android:hint="Code"
+            android:maxLines="1"
             android:paddingStart="15dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -233,7 +235,7 @@
             app:layout_constraintVertical_bias="0.0"></TextView>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/percenSale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
