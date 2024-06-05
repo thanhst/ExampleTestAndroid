@@ -96,6 +96,7 @@ public class RegisterAcitivity extends AppCompatActivity {
                                     userRepository.insertUser(userPut);
                                     isInsertDone[0] =true;
                                     Toast.makeText(RegisterAcitivity.this, "Added successfully!", Toast.LENGTH_SHORT).show();
+                                    finish();
                                 }
                                 else{
                                     Toast.makeText(RegisterAcitivity.this, "Error, username had been used!", Toast.LENGTH_SHORT).show();

@@ -1,12 +1,22 @@
 package com.app.testapp63httt1.testproject.Activity;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.midi.MidiDeviceService;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -38,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
     private ImageView myCart;
     private RecyclerView recyclerView;
     private ProductRepository productRepository;
+    private ImageView settings;
+    private User user;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         });
         Bundle bundle = new Bundle();
         bundle = getIntent().getBundleExtra("bundle_data");
-        User user = (User) bundle.getSerializable("user");
+        user = (User) bundle.getSerializable("user");
+
 
         productRepository = new ProductRepository(getApplication());
         username = findViewById(R.id.username);
@@ -61,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         role = findViewById(R.id.role);
         myCart = findViewById(R.id.myCart);
         recyclerView = findViewById(R.id.recycleViewProduct);
+        settings=findViewById(R.id.settings);
 
         username.setText(user.getUsername());
         fullname.setText(user.getFullName());
@@ -70,25 +85,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                intent.putExtra("user",user);
                 startActivity(intent);
             }
         });
 
-        for(int i =1;i<11;i++){
-            Product product = new Product();
-            product.setName("Tên: Sản phẩm " +i);
-            product.setDescription("Mô tả: sản phẩm mô tả " +i);
-            product.setPrice((float)i);
-            String uri = "android.resource://"+getPackageName()+"/"+R.drawable.cafe;
-            product.setImagePath(uri);
-            productRepository.insertProduct(product);
-        }
         GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 1);
         recyclerView.setLayoutManager(layoutManager);
         productRepository.getProducts().observe(MainActivity.this, new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
-                recyclerView.setAdapter(new ProductAdapter(products));
+                recyclerView.setAdapter(new ProductAdapter(products,getApplication(),user));
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogSettings(MainActivity.this);
             }
         });
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -97,5 +111,43 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         getOnBackPressedDispatcher().addCallback(callback);
+    }
+    public void DialogSettings(Context context){
+        try {
+            Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.setting);
+            Window window = dialog.getWindow();
+            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT,WindowManager.LayoutParams.MATCH_PARENT );
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributesribute = window.getAttributes();
+            windowAttributesribute.gravity= Gravity.LEFT;
+            window.setAttributes(windowAttributesribute);
+            dialog.setCancelable(true);
+
+            TextView fullname = dialog.findViewById(R.id.fullname);
+            fullname.setText(user.getFullName());
+            TextView username = dialog.findViewById(R.id.username);
+            username.setText(user.getUsername());
+            TextView createDate = dialog.findViewById(R.id.createDate);
+            createDate.setText(user.getCreateDate());
+            TextView role = dialog.findViewById(R.id.role);
+            role.setText(user.getRole());
+
+            Button btnLogOut = dialog.findViewById(R.id.logout);
+            btnLogOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Failed to open settings dialog", Toast.LENGTH_SHORT).show();
+        }
     }
 }

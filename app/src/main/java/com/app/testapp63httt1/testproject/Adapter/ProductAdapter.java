@@ -1,5 +1,6 @@
 package com.app.testapp63httt1.testproject.Adapter;
 
+import android.app.Application;
 import android.media.Image;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -10,18 +11,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.app.testapp63httt1.testproject.Entity.Cart;
 import com.app.testapp63httt1.testproject.Entity.Product;
+import com.app.testapp63httt1.testproject.Entity.User;
 import com.app.testapp63httt1.testproject.R;
+import com.app.testapp63httt1.testproject.Repository.CartRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     private List<Product> productList;
-    public ProductAdapter(List<Product> productList){
+    private CartRepository cartRepository;
+    private User user;
+    public ProductAdapter(List<Product> productList, Application application, User user){
         this.productList = productList;
+        this.cartRepository = new CartRepository(application);
+        this.user = user;
     }
     @NonNull
     @Override
@@ -38,7 +47,31 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.addProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),"Clicked!",Toast.LENGTH_SHORT).show();
+                final boolean[] checked = {false};
+                cartRepository.checkProduct(product.getId(), user.getUsername()).observeForever(new Observer<Cart>() {
+                    @Override
+                    public void onChanged(Cart cart) {
+                        if(checked[0]==true){
+                            return;
+                        }
+                        if(cart == null){
+                            Cart cart1= new Cart();
+                            cart1.setCount(1);
+                            cart1.setIdProduct(product.getId());
+                            cart1.setTotal(String.valueOf(1*product.getPrice()));
+                            cart1.setUsername(user.getUsername());
+                            cartRepository.insertCart(cart1);
+                            checked[0]=true;
+                            Toast.makeText(v.getContext(),"Added!",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            cartRepository.upCountCart(user.getUsername(),cart.getId());
+                            cartRepository.updateTotal(product.getPrice(),cart.getId());
+                            Toast.makeText(v.getContext(),"Updated!",Toast.LENGTH_SHORT).show();
+                            checked[0]=true;
+                        }
+                    }
+                });
             }
         });
     }

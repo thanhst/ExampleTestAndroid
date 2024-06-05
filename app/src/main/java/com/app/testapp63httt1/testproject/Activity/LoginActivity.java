@@ -66,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putSerializable("user", (Serializable) user);
+                                    bundle.putString("username",user.getUsername().toString());
+                                    bundle.putString("password",user.getPassword().toString());
                                     intent.putExtra("bundle_data",bundle);
                                     startActivity(intent);
                                     Toast.makeText(LoginActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();

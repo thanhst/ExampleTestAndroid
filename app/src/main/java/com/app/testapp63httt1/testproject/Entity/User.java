@@ -1,6 +1,7 @@
 package com.app.testapp63httt1.testproject.Entity;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -72,6 +73,7 @@ public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String fullName;
+
     private String username;
     private String password;
     private String createDate;

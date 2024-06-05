@@ -1,5 +1,7 @@
 package com.app.testapp63httt1.testproject.DAO;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
