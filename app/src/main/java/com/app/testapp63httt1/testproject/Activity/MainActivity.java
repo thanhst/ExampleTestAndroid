@@ -4,10 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.midi.MidiDeviceService;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -90,6 +93,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs",MODE_PRIVATE);
+        Boolean initdata = sharedPreferences.getBoolean("initData",false);
+        if(initdata==false){
+            productRepository.initData(getApplication());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("initData",true);
+            editor.apply();
+        }
         GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 1);
         recyclerView.setLayoutManager(layoutManager);
         productRepository.getProducts().observe(MainActivity.this, new Observer<List<Product>>() {

@@ -6,6 +6,7 @@ import com.app.testapp63httt1.testproject.Entity.Product;
 import com.app.testapp63httt1.testproject.R;
 
 import android.app.Application;
+import android.net.Uri;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.RoomDatabase;
@@ -24,7 +25,6 @@ public class ProductRepository {
         databaseRoom = DatabaseRoom.getInstance(application);
         productDAO = databaseRoom.productDAO();
         dataserExecutorService = Executors.newSingleThreadExecutor();
-        initData(application);
     }
     public void insertProduct(Product product){
         dataserExecutorService.execute(()->{
@@ -47,6 +47,7 @@ public class ProductRepository {
         deleteAllProduct();
         for(int i =1;i<11;i++){
             Product product = new Product();
+            product.setId(i);
             product.setName("Sản phẩm " +i);
             product.setDescription("sản phẩm mô tả " +i);
             product.setPrice((float)i);

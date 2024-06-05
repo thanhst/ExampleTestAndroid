@@ -47,7 +47,7 @@ public class Product implements Serializable {
         this.imagePath = imagePath;
     }
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     private int id;
     private String name;
     private String description;
